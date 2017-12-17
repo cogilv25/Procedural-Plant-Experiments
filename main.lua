@@ -4,16 +4,16 @@ require "lib/stack"
 require "base/vector"
 require "base/entity"
 n = 0
-angle = math.rad(25.7)
-initiator = "F"
-generator = {"F","F[+F]F[-F]F"}
+angle = math.rad(22.5)
+initiator = "X"
+generator = {"F","FF","X","F-[[X]+X]+F[+FX]-X"}
 actor = Entity();actor.dim = Vector(5,5);actor.pos = Vector(100,100)
 actor.color = {255,255,255}
 actor.dir = Vector(0,-5)
 actor.stack = Stack()
 needToUpdate = true
 scale = 1
-trans = Vector(400,300)
+trans = Vector(400,600)
 stack = Stack()
 
 function stepForward()
@@ -97,7 +97,7 @@ end
 
 function love.keypressed(key)
 	if(key == "escape")then
-		love.window.close()
+		love.event.quit()
 	end
 	if(key == "left" or key == "a")then
 		--TODO: step back
