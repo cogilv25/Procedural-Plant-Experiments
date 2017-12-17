@@ -5,11 +5,19 @@ require "base/vector"
 require "base/entity"
 n = 0
 genChoice = 1
-angles = {22.5,45}
-initiators = {"RFT","R"}
+angles = {22.5,45,25.7,22.5,25.7,22.5,20}
+initiators = {"RFT","R","F","X","Y","F","X"}
 generators = {{"R","RF","T","JA","J","[++RFFT][-RFFT]","A","F+JB","B","FFF---J"},
-			{"R","FR-U","U","FF--D","D","FF++U"}}
-names = {"tree-1","coil"}
+			{"R","FR-U","U","FF--D","D","FF++U"},
+			{"F","F[+F]F[-F]F"},
+			{"X","F-[[X]+X]+F[+FX]-X","F","FF"},
+			{"Y","YFX[+Y][-Y]","X","X[-FFF][+FFF]FX"},
+			{"F","FF+[+F-F-F]-[-F+F+F]"},
+			{"X","F[+X]F[-X]+X","F","FF"}}
+--PP = Przemyslaw Prusinkiewicz
+--JH = James Hanan
+
+names = {"tree-1","coil","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH"}
 angle = math.rad(angles[genChoice])
 initiator = initiators[genChoice]
 generator = generators[genChoice]
@@ -55,7 +63,16 @@ function stepForward()
 end
 
 function stepBack()
-
+	local t = n-1
+	actor.pos = startpos
+	stack = Stack()
+	actor.dir = Vector(0,-5)
+	state = initiator
+	for i=1,t do
+		stepForward()
+	end
+	n = t
+	needToUpdate = true
 end
 
 
@@ -125,7 +142,8 @@ function love.keypressed(key)
 		love.event.quit()
 	end
 	if(key == "left" or key == "a")then
-		--TODO: step back
+		--step back
+		stepBack()
 	end
 	if(key == "right" or key == "d")then
 		--step forward
