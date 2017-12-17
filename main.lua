@@ -88,6 +88,7 @@ function love.draw()
 	love.graphics.setBlendMode("alpha")
 	love.graphics.print("n="..n,0,0)
 	love.graphics.printf(names[genChoice],0,0,800,"center")
+	love.graphics.printf(genChoice.."/"..#names-1,0,0,800,"right")
 end
 
 function love.update(d)
