@@ -4,17 +4,35 @@ require "lib/stack"
 require "base/vector"
 require "base/entity"
 n = 0
-angle = math.rad(22.5)
-initiator = "X"
-generator = {"F","FF","X","F-[[X]+X]+F[+FX]-X"}
-actor = Entity();actor.dim = Vector(5,5);actor.pos = Vector(100,100)
+genChoice = 1
+angles = {22.5,45}
+initiators = {"RFT","R"}
+generators = {{"R","RF","T","JA","J","[++RFFT][-RFFT]","A","F+JB","B","FFF---J"},
+			{"R","FR-U","U","FF--D","D","FF++U"}}
+names = {"tree-1","coil"}
+angle = math.rad(angles[genChoice])
+initiator = initiators[genChoice]
+generator = generators[genChoice]
+actor = Entity();actor.dim = Vector(5,5);actor.pos = Vector(400,600)
+startpos = Vector(400,600)
 actor.color = {255,255,255}
 actor.dir = Vector(0,-5)
-actor.stack = Stack()
+stack = Stack()
 needToUpdate = true
 scale = 1
-trans = Vector(400,600)
-stack = Stack()
+
+function choiceChanged()
+	angle = math.rad(angles[genChoice])
+	initiator = initiators[genChoice]
+	generator = generators[genChoice]
+	actor.pos = startpos
+	n = 0
+	scale = 1
+	stack = Stack()
+	needToUpdate = true
+	actor.dir = Vector(0,-5)
+	state = initiator
+end
 
 function stepForward()
 	n = n + 1
@@ -36,6 +54,10 @@ function stepForward()
 	needToUpdate = true
 end
 
+function stepBack()
+
+end
+
 
 function love.load()
 	state = initiator
@@ -46,17 +68,21 @@ function love.draw()
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.setBlendMode("alpha", "premultiplied")
 	love.graphics.draw(framebuffer)
+	love.graphics.setBlendMode("alpha")
+	love.graphics.print("n="..n,0,0)
+	love.graphics.printf(names[genChoice],0,0,800,"center")
 end
 
 function love.update(d)
 	if(needToUpdate)then
 		--Work On framebuffer
+		actor.pos = startpos:getCopy()
+		actor.pos:scale(1/scale)
     	love.graphics.setCanvas(framebuffer)
 		love.graphics.scale(scale,scale)
         love.graphics.clear()
         love.graphics.setBlendMode("alpha")
-        love.graphics.translate(trans.x,trans.y)
-
+        --TODO: replace strings as well as individual characters
 		for instruction in state:gmatch"." do
 
 			if(instruction == 'f')then
@@ -90,7 +116,6 @@ function love.update(d)
 		--Back to default framebuffer (ie. the screen)
     	love.graphics.setCanvas()
 		needToUpdate = false
-		actor.pos = Vector(100,100)
 		actor.dir = Vector(0,-5)
 	end
 end
@@ -111,7 +136,15 @@ function love.keypressed(key)
 		needToUpdate = true
 	end
 	if(key == "up" or key == "w")then
-		trans:scale(2)
+		scale = scale*1.33333
 		needToUpdate = true
+	end
+	if(key == ".")then
+		genChoice = genChoice + 1
+		choiceChanged()
+	end
+	if(key == ",")then
+		genChoice = genChoice - 1
+		choiceChanged()
 	end
 end
