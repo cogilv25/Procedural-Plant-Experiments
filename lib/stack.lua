@@ -1,3 +1,7 @@
+--Written by Calum Lindsay.
+
+--Super simple barebones stack class
+
 Stack = Object:extend()
 
 function Stack:new()

@@ -1,29 +1,60 @@
---http://algorithmicbotany.org/papers/lsfp.pdf <-- Reference
-Object = require "lib/classic"
+-- Written by Calum Lindsay.
+
+-- A while ago I stumbled across this paper
+-- (http://algorithmicbotany.org/papers/lsfp.pdf)
+-- and was intrigued so I made this small program
+-- capable of generating some of the fractals
+-- described in the paper copying a few of
+-- the patterns in the paper and attempting a
+-- couple of my own. It's not very easy to read
+-- however as it was never really intended to be
+-- but I think I might come back to it and tidy
+-- up because it's really quite a fascinating
+-- subject.
+
+-- Controls:
+-- Up and Down - zoom in and out
+-- Left and Right - step generator back and forward
+-- Comma and Dot - previous and next generator
+
+-- TODO:
+-- 1)Tidy & Comment 
+-- 2)Make a generator class
+-- 3)Why not push actor:getCopy() onto stack
+-- 4)Optimize to allow more steps without lag
+
+Object = require "lib/classic/classic"
 require "lib/stack"
 require "base/vector"
 require "base/entity"
 n = 0
 genChoice = 1
-angles = {22.5,45,25.7,22.5,25.7,22.5,20}
-initiators = {"RFT","R","F","X","Y","F","X"}
-generators = {{"R","RF","T","JA","J","[++RFFT][-RFFT]","A","F+JB","B","FFF---J"},
+angles = {22.5,45,25.7,22.5,25.7,22.5,20,10}
+initiators = {"RFT","R","F","X","Y","F","X","F"}
+generators = {
+
+			
+			{"R","RF","T","JA","J","[++RFFT][-RFFT]","A","F+JB","B","FFF---J"},
 			{"R","FR-U","U","FF--D","D","FF++U"},
 			{"F","F[+F]F[-F]F"},
 			{"X","F-[[X]+X]+F[+FX]-X","F","FF"},
 			{"Y","YFX[+Y][-Y]","X","X[-FFF][+FFF]FX"},
 			{"F","FF+[+F-F-F]-[-F+F+F]"},
-			{"X","F[+X]F[-X]+X","F","FF"}}
+			{"X","F[+X]F[-X]+X","F","FF"},
+			{"F", "FmF"}
+
+			}
 --PP = Przemyslaw Prusinkiewicz
 --JH = James Hanan
+--CL = Calum Lindsay
 
-names = {"tree-1","coil","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH"}
+names = {"Tree 1 by CL","Rhombus? by CL","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","RNG test"}
 angle = math.rad(angles[genChoice])
 initiator = initiators[genChoice]
 generator = generators[genChoice]
 actor = Entity();actor.dim = Vector(5,5);actor.pos = Vector(400,600)
 startpos = Vector(400,600)
-actor.color = {255,255,255}
+actor.color = {0,255,255}
 actor.dir = Vector(0,-5)
 stack = Stack()
 needToUpdate = true
@@ -129,6 +160,12 @@ function love.update(d)
 				stack:push(actor.pos.y)
 				stack:push(actor.dir.x)
 				stack:push(actor.dir.y)
+			elseif(instruction == 'm')then
+				local rAngle = love.math.random(-90,90)
+				local lx = actor.dir.x
+				local ly = actor.dir.y
+				actor.dir.x = lx * math.cos(rAngle) - ly * math.sin(rAngle)
+				actor.dir.y = ly * math.cos(rAngle) + lx * math.sin(rAngle)
 			end
 		end
 		--Back to default framebuffer (ie. the screen)
@@ -144,26 +181,36 @@ function love.keypressed(key)
 	end
 	if(key == "left" or key == "a")then
 		--step back
-		stepBack()
+		if(n>0)then
+			stepBack()
+		end
 	end
 	if(key == "right" or key == "d")then
 		--step forward
 		stepForward()
 	end
 	if(key == "down" or key == "s")then
-		scale = scale * 0.75
-		needToUpdate = true
+		if(scale > 0.2)then
+			scale = scale * 0.75
+			needToUpdate = true
+		end
 	end
 	if(key == "up" or key == "w")then
-		scale = scale*1.33333
-		needToUpdate = true
+		if(scale < 8)then
+			scale = scale*1.33333
+			needToUpdate = true
+		end
 	end
 	if(key == ".")then
-		genChoice = genChoice + 1
-		choiceChanged()
+		if(genChoice< #initiators)then
+			genChoice = genChoice + 1
+			choiceChanged()
+		end
 	end
 	if(key == ",")then
-		genChoice = genChoice - 1
-		choiceChanged()
+		if(genChoice>1)then
+			genChoice = genChoice - 1
+			choiceChanged()
+		end
 	end
 end
