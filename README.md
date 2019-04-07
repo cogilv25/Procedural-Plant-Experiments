@@ -1,4 +1,4 @@
-# Procedural Plant Experiments
+# Tick Tick
 Written by Calum Lindsay.  
  A while ago I stumbled across [this paper](http://algorithmicbotany.org/papers/lsfp.pdf) and was intrigued so I made this small program capable of generating some of the fractals described in the paper copying a few of the patterns in the paper and attempting a couple of my own. It's not very easy to read however as it was never really intended to be but I think I might come back to it and tidy up because it's really quite a fascinating subject.
 
