@@ -27,43 +27,36 @@ Object = require "lib/classic/classic"
 require "lib/stack"
 require "base/vector"
 require "base/entity"
+require "LSystemGenerator"
 n = 0
-genChoice = 1
-angles = {22.5,45,25.7,22.5,25.7,22.5,20,10}
-initiators = {"RFT","R","F","X","Y","F","X","F"}
-generators = {
 
-			
-			{"R","RF","T","JA","J","[++RFFT][-RFFT]","A","F+JB","B","FFF---J"},
-			{"R","FR-U","U","FF--D","D","FF++U"},
-			{"F","F[+F]F[-F]F"},
-			{"X","F-[[X]+X]+F[+FX]-X","F","FF"},
-			{"Y","YFX[+Y][-Y]","X","X[-FFF][+FFF]FX"},
-			{"F","FF+[+F-F-F]-[-F+F+F]"},
-			{"X","F[+X]F[-X]+X","F","FF"},
-			{"F", "FmF"}
-
-			}
 --PP = Przemyslaw Prusinkiewicz
 --JH = James Hanan
 --CL = Calum Lindsay
+generators = {}
+generators[1] = LSystemGenerator("Tree 1 by CL", "RFT", 22.5, {"R","RF","T","JA","J","[++RFFT][-RFFT]","A","F+JB","B","FFF---J"})
+generators[2] = LSystemGenerator("Rhombus? by CL", "R", 45, {"R","FR-U","U","FF--D","D","FF++U"})
+generators[3] = LSystemGenerator("Plant by PP & JH", "F", 25.7, {"F","F[+F]F[-F]F"})
+generators[4] = LSystemGenerator("Plant by PP & JH", "X", 22.5, {"X","F-[[X]+X]+F[+FX]-X","F","FF"})
+generators[5] = LSystemGenerator("Plant by PP & JH", "Y", 25.7, {"Y","YFX[+Y][-Y]","X","X[-FFF][+FFF]FX"})
+generators[6] = LSystemGenerator("Plant by PP & JH", "F", 22.5, {"F","FF+[+F-F-F]-[-F+F+F]"})
+generators[7] = LSystemGenerator("Plant by PP & JH", "X", 20, {"X","F[+X]F[-X]+X","F","FF"})
+generators[8] = LSystemGenerator("RNG test", "F", 10, {"F", "FmF"})
 
-names = {"Tree 1 by CL","Rhombus? by CL","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","Plant by PP & JH","RNG test"}
-angle = math.rad(angles[genChoice])
-initiator = initiators[genChoice]
-generator = generators[genChoice]
-actor = Entity();actor.dim = Vector(5,5);actor.pos = Vector(400,600)
-startpos = Vector(400,600)
+genChoice = 1
+
+actor = Entity()
+actor.dim = Vector(5,5)
 actor.color = {0,255,255}
-actor.dir = Vector(0,-5)
+startpos = Vector(400,600)
 stack = Stack()
 needToUpdate = true
 scale = 1
 
 function choiceChanged()
-	angle = math.rad(angles[genChoice])
-	initiator = initiators[genChoice]
-	generator = generators[genChoice]
+	angle = math.rad(generators[genChoice].angle)
+	initiator = generators[genChoice].initial
+	ruleset = generators[genChoice].rules
 	actor.pos = startpos
 	n = 0
 	scale = 1
@@ -78,10 +71,10 @@ function stepForward()
 	oldState = state
 	state = ""
 	for instruction in oldState:gmatch"." do
-		local lgen = #generator / 2
+		local lgen = #ruleset / 2
 		for i=1,lgen do
-			if(instruction == generator[i*2-1])then
-				state = state .. generator[i*2]
+			if(instruction == ruleset[i*2-1])then
+				state = state .. ruleset[i*2]
 				break
 			else
 				if(i == lgen)then
@@ -110,6 +103,7 @@ end
 function love.load()
 	state = initiator
 	framebuffer = love.graphics.newCanvas(800, 600)
+	choiceChanged()
 end
 
 function love.draw()
@@ -118,8 +112,8 @@ function love.draw()
 	love.graphics.draw(framebuffer)
 	love.graphics.setBlendMode("alpha")
 	love.graphics.print("n="..n,0,0)
-	love.graphics.printf(names[genChoice],0,0,800,"center")
-	love.graphics.printf(genChoice.."/"..#names-1,0,0,800,"right")
+	love.graphics.printf(generators[genChoice].name,0,0,800,"center")
+	love.graphics.printf(genChoice.."/"..#generators,0,0,800,"right")
 end
 
 function love.update(d)
@@ -202,7 +196,7 @@ function love.keypressed(key)
 		end
 	end
 	if(key == ".")then
-		if(genChoice< #initiators)then
+		if(genChoice< #generators)then
 			genChoice = genChoice + 1
 			choiceChanged()
 		end
