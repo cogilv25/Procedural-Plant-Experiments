@@ -1,3 +1,4 @@
+Object = require "lib/thirdparty/classic/classic"
 
 LSystemGenerator = Object:extend()
 

@@ -23,11 +23,10 @@
 -- 3)Why not push actor:getCopy() onto stack
 -- 4)Optimize to allow more steps without lag
 
-Object = require "lib/classic/classic"
-require "lib/stack"
-require "base/vector"
-require "base/entity"
 require "LSystemGenerator"
+require "lib/containers/stack"
+require "lib/game/vector"
+require "lib/game/entity"
 n = 0
 
 --PP = Przemyslaw Prusinkiewicz
