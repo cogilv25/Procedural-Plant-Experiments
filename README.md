@@ -10,8 +10,10 @@ You will need the LÖVE Engine to run it which you can get [here](https://love2d
 - Left and Right to step generator back and forward
 - Comma and Dot to change generators
 
-## Possible future improvements / problems
-- Tidy & Comment 
-- Make a generator class
-- Why not push actor:getCopy() onto stack instead of actors fields
-- Optimize to allow more steps without lag
+## Todo list
+- [ ] Refactor
+- [ ] Optimize to allow more steps without lag
+- [ ] Maybe perform generation over multiple frames to prevent program hang
+- [ ] Progress bar for slow generators
+- [ ] Remove lib requirement
+- [ ] Add groups funcionality (treat strings as groups and allow replacement of groups)
