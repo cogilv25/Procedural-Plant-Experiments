@@ -23,7 +23,17 @@
 -- 3)Why not push actor:getCopy() onto stack
 -- 4)Optimize to allow more steps without lag
 
-require "LSystemGenerator"
+function LSystemGenerator(name, initialValue, angle, rules)
+	local gen = {}
+	gen.initial = initialValue
+	gen.angle = angle
+	gen.rules = rules
+	gen.name = name
+	return gen
+end
+
+--require "LSystemGenerator"
+Object = require "lib/thirdparty/classic/classic"
 require "lib/containers/stack"
 require "lib/game/vector"
 require "lib/game/entity"
@@ -33,28 +43,26 @@ n = 0
 --JH = James Hanan
 --CL = Calum Lindsay
 generators = {}
-generators[1] = LSystemGenerator("Tree 1 by CL", "RFT", 22.5, {"R","RF","T","JA","J","[++RFFT][-RFFT]","A","F+JB","B","FFF---J"})
-generators[2] = LSystemGenerator("Rhombus? by CL", "R", 45, {"R","FR-U","U","FF--D","D","FF++U"})
-generators[3] = LSystemGenerator("Plant by PP & JH", "F", 25.7, {"F","F[+F]F[-F]F"})
-generators[4] = LSystemGenerator("Plant by PP & JH", "X", 22.5, {"X","F-[[X]+X]+F[+FX]-X","F","FF"})
-generators[5] = LSystemGenerator("Plant by PP & JH", "Y", 25.7, {"Y","YFX[+Y][-Y]","X","X[-FFF][+FFF]FX"})
-generators[6] = LSystemGenerator("Plant by PP & JH", "F", 22.5, {"F","FF+[+F-F-F]-[-F+F+F]"})
-generators[7] = LSystemGenerator("Plant by PP & JH", "X", 20, {"X","F[+X]F[-X]+X","F","FF"})
-generators[8] = LSystemGenerator("RNG test", "F", 10, {"F", "FmF"})
-generators[9] = LSystemGenerator("Circle pattern 1 by CL","ffffffffffffffffffffffffffff---F", 22.5,{"F","+++FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF"})
-generators[10] = LSystemGenerator("Circle pattern 2 by CL","ffffffffffffffffffffffffffff---F", 22.5,{"F","+++FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF"})
-generators[11] = LSystemGenerator("Circle pattern 3 by CL","ffffffffffffffffffffffffffff---F", 22.5,{"F","+++fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf"})
-generators[12] = LSystemGenerator("Circle pattern 4 by CL","ffffffffffffffffffffffffffff---F", 22.5,{"F","+++fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf"})
-generators[13] = LSystemGenerator("Circle pattern 5 by CL","fffffffffffffffffffffffffffffffffffffffffffff---F", 22.5,{"F","+++fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf"})
-generators[14] = LSystemGenerator("Square pattern by CL","fffffffffffffffffff---F", 90,{"F","+++fFfFf+fFfFf+fFfFf+fFfFf"})
-generators[15] = LSystemGenerator("Triangle pattern 1 by CL","fffffffffffffffffff---F", 120,{"F","fFfFf+fFfFf+fFfFf+fFfFf"})
-generators[16] = LSystemGenerator("Triangle pattern 2 by CL","fffffffffffffffffff---F", 120,{"F","fFfFf+fFfFf+fFfFf"})
-generators[17] = LSystemGenerator("Triangle pattern 3 by CL","fffffffffffffffffff---F", 120,{"F","++fFfFf+fFfFf"})
-generators[18] = LSystemGenerator("Pentagon pattern 1 by CL","fffffffffffffffffff---F", 72,{"F","FFFFF+FFFFF+FFFFF+FFFFF+FFFFF"})
-generators[19] = LSystemGenerator("Hexagon pattern 1 by CL","fffffffffffffffffff---F", 60,{"F","FFFFF+FFFFF+FFFFF+FFFFF+FFFFF+FFFFF"})
-generators[20] = LSystemGenerator("Heptagon pattern 1 by CL","fffffffffffffffffff---F", 51.4287,{"F","FFFFF+FFFFF+FFFFF+FFFFF+FFFFF+FFFFF+FFFFF"})
-generators[21] = LSystemGenerator("Heptagon pattern 2 by CL","fffffffffffffffffff---F", 51.4287,{"F","FFfFF+FFfFF+FFfFF+FFfFF+FFfFF+FFfFF+FFfFF"})
-generators[22] = LSystemGenerator("Heptagon pattern 3 by CL","fffffffffffffffffff---F", 51.4287,{"F","FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF"})
+generators[1] = LSystemGenerator("Plant by PP & JH", "F", 25.7, {"F","F[+F]F[-F]F"})
+generators[2] = LSystemGenerator("Plant by PP & JH", "X", 22.5, {"X","F-[[X]+X]+F[+FX]-X","F","FF"})
+generators[3] = LSystemGenerator("Plant by PP & JH", "Y", 25.7, {"Y","YFX[+Y][-Y]","X","X[-FFF][+FFF]FX"})
+generators[4] = LSystemGenerator("Plant by PP & JH", "F", 22.5, {"F","FF+[+F-F-F]-[-F+F+F]"})
+generators[5] = LSystemGenerator("Plant by PP & JH", "X", 20, {"X","F[+X]F[-X]+X","F","FF"})
+generators[6] = LSystemGenerator("RNG test", "F", 10, {"F", "FmF"})
+generators[7] = LSystemGenerator("Circle pattern 1 by CL","ffffffffffffffffffffffffffff---F", 22.5,{"F","+++FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF"})
+generators[8] = LSystemGenerator("Circle pattern 2 by CL","ffffffffffffffffffffffffffff---F", 22.5,{"F","+++FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF"})
+generators[9] = LSystemGenerator("Circle pattern 3 by CL","ffffffffffffffffffffffffffff---F", 22.5,{"F","+++fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf"})
+generators[10] = LSystemGenerator("Circle pattern 4 by CL","ffffffffffffffffffffffffffff---F", 22.5,{"F","+++fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf"})
+generators[11] = LSystemGenerator("Circle pattern 5 by CL","fffffffffffffffffffffffffffffffffffffffffffff---F", 22.5,{"F","+++fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf"})
+generators[12] = LSystemGenerator("Square pattern by CL","fffffffffffffffffff---F", 90,{"F","+++fFfFf+fFfFf+fFfFf+fFfFf"})
+generators[13] = LSystemGenerator("Triangle pattern 1 by CL","fffffffffffffffffff---F", 120,{"F","fFfFf+fFfFf+fFfFf+fFfFf"})
+generators[14] = LSystemGenerator("Triangle pattern 2 by CL","fffffffffffffffffff---F", 120,{"F","fFfFf+fFfFf+fFfFf"})
+generators[15] = LSystemGenerator("Triangle pattern 3 by CL","fffffffffffffffffff---F", 120,{"F","++fFfFf+fFfFf"})
+generators[16] = LSystemGenerator("Pentagon pattern 1 by CL","fffffffffffffffffff---F", 72,{"F","FFFFF+FFFFF+FFFFF+FFFFF+FFFFF"})
+generators[17] = LSystemGenerator("Hexagon pattern 1 by CL","fffffffffffffffffff---F", 60,{"F","FFFFF+FFFFF+FFFFF+FFFFF+FFFFF+FFFFF"})
+generators[18] = LSystemGenerator("Heptagon pattern 1 by CL","fffffffffffffffffff---F", 51.4287,{"F","FFFFF+FFFFF+FFFFF+FFFFF+FFFFF+FFFFF+FFFFF"})
+generators[19] = LSystemGenerator("Heptagon pattern 2 by CL","fffffffffffffffffff---F", 51.4287,{"F","FFfFF+FFfFF+FFfFF+FFfFF+FFfFF+FFfFF+FFfFF"})
+generators[20] = LSystemGenerator("Heptagon pattern 3 by CL","fffffffffffffffffff---F", 51.4287,{"F","FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF"})
 
 
 genChoice = 1
