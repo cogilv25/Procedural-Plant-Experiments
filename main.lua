@@ -22,6 +22,7 @@
 -- 2)Make a generator class
 -- 3)Why not push actor:getCopy() onto stack
 -- 4)Optimize to allow more steps without lag
+-- 5)Define what instructions (f,F,+,-) do in a table
 
 function LSystemGenerator(name, initialValue, angle, rules)
 	local gen = {}
@@ -64,13 +65,90 @@ generators[18] = LSystemGenerator("Heptagon pattern 1 by CL","ffffffffffffffffff
 generators[19] = LSystemGenerator("Heptagon pattern 2 by CL","fffffffffffffffffff---F", 51.4287,{"F","FFfFF+FFfFF+FFfFF+FFfFF+FFfFF+FFfFF+FFfFF"})
 generators[20] = LSystemGenerator("Heptagon pattern 3 by CL","fffffffffffffffffff---F", 51.4287,{"F","FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF"})
 
+--Start Of Refactor Stuff
+
+startpos = {x=400,y=600}
+locus = {}
+drawMode = "dot"
+
+--[[Replacement Functions
+
+
+function love.draw()
+	--TODO: Multiple modes (points, lines, triangles, quads, curves, etc)
+	--		Dots/circles/ellipse, lines, polygon/s, rectangles, curves
+	--		For all shapes fill/line
+
+	love.graphics.setColor(255,255,255,255)
+	
+	if(drawMode == "circle")then
+		for pos=1, #locus do
+			love.graphics.circle("line",pos[3],pos[4],5)
+		end
+	elseif(drawMode == "dot")then
+		for pos=1, #locus do
+			love.graphics.circle("fill",pos[3],pos[4],1)
+		end
+	elseif(drawMode == "line")then
+		for pos=1, #locus do
+			love.graphics.line(pos[1],pos[2],pos[3],pos[4])
+		end
+	end
+
+	love.graphics.print("n="..n,0,0)
+	love.graphics.printf(generators[genChoice].name,0,0,800,"center")
+	love.graphics.printf(genChoice.."/"..#generators,0,0,800,"right")
+end
+
+function love.update(d)
+	if(needToUpdate)then
+		actor.pos = Vector(startpos.x,startpos.y)
+		actor.dir = Vector(0,-5)
+		actor.pos:scale(1/scale)
+		--Work On framebuffer
+    	love.graphics.setCanvas(framebuffer)
+		love.graphics.scale(scale,scale)
+        love.graphics.clear()
+        love.graphics.setBlendMode("alpha")
+        --TODO: replace strings as well as individual characters
+		for instruction in state:gmatch"." do
+			
+			if(instruction == 'f')then
+				actor.pos = actor.pos + actor.dir
+			elseif(instruction == 'F')then
+				locus[#locus+1] = {actor.pos.x,actor.pos.y,actor.pos.x+actor.dir.x,actor.pos.y+actor.dir.y}
+				actor.pos = actor.pos + actor.dir
+			elseif(instruction == '-')then
+				local t = {actor.dir.x,actor.dir.y}
+				actor.dir.x = t[1] * math.cos(-angle) - t[2] * math.sin(-angle)
+				actor.dir.y = t[2] * math.cos(-angle) + t[1] * math.sin(-angle)
+			elseif(instruction == '+')then
+				local t = {actor.dir.x,actor.dir.y}
+				actor.dir.x = t[1] * math.cos(angle) - t[2] * math.sin(angle)
+				actor.dir.y = t[2] * math.cos(angle) + t[1] * math.sin(angle)
+			elseif(instruction == ']')then
+				local t = stack:pop()
+				actor.dir = Vector(t[3],t[4])
+				actor.pos = Vector(t[1],t[2])
+			elseif(instruction == '[')then
+				stack:push({actor.pos.x,actor.pos.y,actor.dir.x,actor.dir.y})
+			end
+		end
+
+		needToUpdate = false
+	end
+end
+
+
+End Of Replacement Functions]]
+
+--End of Refactor Stuff
 
 genChoice = 1
 
 actor = Entity()
 actor.dim = Vector(5,5)
 actor.color = {0,255,255}
-startpos = Vector(400,600)
 stack = Stack()
 needToUpdate = true
 scale = 1
@@ -92,6 +170,8 @@ function stepForward()
 	n = n + 1
 	oldState = state
 	state = ""
+
+	--step through all chars in oldState
 	for instruction in oldState:gmatch"." do
 		local lgen = #ruleset / 2
 		for i=1,lgen do
@@ -104,6 +184,7 @@ function stepForward()
 			end
 		end
 	end
+
 	needToUpdate = true
 end
 
@@ -140,7 +221,7 @@ end
 function love.update(d)
 	if(needToUpdate)then
 		--Work On framebuffer
-		actor.pos = startpos:getCopy()
+		actor.pos = Vector(startpos.x,startpos.y)
 		actor.pos:scale(1/scale)
     	love.graphics.setCanvas(framebuffer)
 		love.graphics.scale(scale,scale)
@@ -154,7 +235,11 @@ function love.update(d)
 			elseif(instruction == 'F')then
 				local t = {actor.pos.x,actor.pos.y}
 				actor.pos = actor.pos + actor.dir
-				love.graphics.line(t[1],t[2],actor.pos.x,actor.pos.y)
+				if(drawMode == "line")then
+					love.graphics.line(t[1],t[2],actor.pos.x,actor.pos.y)
+				elseif(drawMode == "dot")then
+					love.graphics.circle("fill",t[1],t[2],1)
+				end
 			elseif(instruction == '-')then
 				local lx = actor.dir.x
 				local ly = actor.dir.y
