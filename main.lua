@@ -69,29 +69,43 @@ generators[20] = LSystemGenerator("Heptagon pattern 3 by CL","ffffffffffffffffff
 
 startpos = {x=400,y=600}
 locus = {}
-drawMode = "dot"
+drawMode = "box"
+drawColor = {255,255,255,255}
+
+--[[ Replacement Tables and functions
+
+--replaces actor
+turtle = {dir = {x=0,y=0}, pos = {x=0,y=0}}
+
+End of Replacement Tables etc]]
+
 
 --[[Replacement Functions
 
 
 function love.draw()
 	--TODO: Multiple modes (points, lines, triangles, quads, curves, etc)
-	--		Dots/circles/ellipse, lines, polygon/s, rectangles, curves
+	--		Dots/circles/ellipses, lines, polygon/s, rectangles, curves
 	--		For all shapes fill/line
 
-	love.graphics.setColor(255,255,255,255)
+	love.graphics.setColor(drawColor)
 	
 	if(drawMode == "circle")then
 		for pos=1, #locus do
-			love.graphics.circle("line",pos[3],pos[4],5)
+			love.graphics.circle("line",locus[pos][1],locus[pos][2],5)
 		end
 	elseif(drawMode == "dot")then
 		for pos=1, #locus do
-			love.graphics.circle("fill",pos[3],pos[4],1)
+			love.graphics.circle("fill",locus[pos][1],locus[pos][2],1)
 		end
 	elseif(drawMode == "line")then
 		for pos=1, #locus do
-			love.graphics.line(pos[1],pos[2],pos[3],pos[4])
+			love.graphics.line(locus[pos][1],locus[pos][2],locus[pos][3],locus[pos][4])
+		end
+	elseif(drawMode == "box")then
+		for pos=1, #locus do
+			local w,h = locus[pos][3] - locus[pos][1], locus[pos][4] - locus[pos][2]
+			love.graphics.rectangle("line",locus[pos][1],locus[pos][2],w,h)
 		end
 	end
 
@@ -110,14 +124,16 @@ function love.update(d)
 		love.graphics.scale(scale,scale)
         love.graphics.clear()
         love.graphics.setBlendMode("alpha")
-        --TODO: replace strings as well as individual characters
+        --TODO: replace strings as well as individual characters (groups)
 		for instruction in state:gmatch"." do
 			
 			if(instruction == 'f')then
-				actor.pos = actor.pos + actor.dir
+				actor.pos.x = actor.pos.x + actor.dir.x
+				actor.pos.y = actor.pos.y + actor.dir.y
 			elseif(instruction == 'F')then
 				locus[#locus+1] = {actor.pos.x,actor.pos.y,actor.pos.x+actor.dir.x,actor.pos.y+actor.dir.y}
-				actor.pos = actor.pos + actor.dir
+				actor.pos.x = actor.pos.x + actor.dir.x
+				actor.pos.y = actor.pos.y + actor.dir.y
 			elseif(instruction == '-')then
 				local t = {actor.dir.x,actor.dir.y}
 				actor.dir.x = t[1] * math.cos(-angle) - t[2] * math.sin(-angle)
@@ -239,6 +255,8 @@ function love.update(d)
 					love.graphics.line(t[1],t[2],actor.pos.x,actor.pos.y)
 				elseif(drawMode == "dot")then
 					love.graphics.circle("fill",t[1],t[2],1)
+				elseif(drawMode == "box")then
+					love.graphics.rectangle("line",t[1],t[2],actor.pos.x - t[1],actor.pos.y-t[2])
 				end
 			elseif(instruction == '-')then
 				local lx = actor.dir.x
