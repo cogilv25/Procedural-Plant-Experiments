@@ -11,9 +11,9 @@ You will need the LÖVE Engine to run it which you can get [here](https://love2d
 - Comma and Dot to change generators
 
 ## Todo list
-- [ ] Refactor
+- [ ] Rewrite
 - [ ] Optimize to allow more steps without lag
-- [ ] Maybe perform generation over multiple frames to prevent program hang
+- [ ] Perform generation in a seperate thread to prevent program hang
 - [ ] Progress bar for slow generators
 - [ ] Remove lib requirement
 - [ ] Add groups funcionality (treat strings as groups and allow replacement of groups)
