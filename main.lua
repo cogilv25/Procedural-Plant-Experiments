@@ -68,7 +68,7 @@ screenWidth,screenHeight = 800,600
 startpos = {screenWidth/2,screenHeight}
 pos = {400,600}
 dir = {0,0}
-drawMode = "line"
+drawMode = "polygon"
 drawColor = {255,255,255,255}
 drawScale = 5
 genChoice = 1
@@ -175,6 +175,19 @@ function love.draw()
 		for k,p in pairs(locus) do
 			love.graphics.line(p[1],p[2],p[3],p[4])
 		end
+	elseif(drawMode == "triangle" and #locus>=3)then
+		for i=1,#locus/3 do
+			local t = {locus[i][1],locus[i][2],locus[i+1][1],locus[i+1][2],
+				locus[i+2][1],locus[i+2][2]}
+			love.graphics.polygon("line",t)
+		end
+	elseif(drawMode == "polygon" and #locus>=3)then
+		local t = {}
+		for k,p in pairs(locus) do
+			table.insert(t,p[1])
+			table.insert(t,p[2])
+		end
+		love.graphics.polygon("line",t)
 	end
 	love.graphics.print("n="..n,0,0)
 	love.graphics.printf(generators[genChoice].name,0,0,800,"center")
