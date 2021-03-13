@@ -69,7 +69,7 @@ generators[20] = LSystemGenerator("Heptagon pattern 3 by CL","ffffffffffffffffff
 
 startpos = {x=400,y=600}
 locus = {}
-drawMode = "box"
+drawMode = "line"
 drawColor = {255,255,255,255}
 
 --[[ Replacement Tables and functions
@@ -331,4 +331,8 @@ function love.keypressed(key)
 			choiceChanged()
 		end
 	end
+end
+
+function love.threaderror(thread, errorstr)
+	print("Thread error: " .. errorstr)
 end
