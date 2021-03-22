@@ -1,0 +1,5 @@
+Plant by PP & JH,F,25.7,F,F[+F]F[-F]F
+Plant by PP & JH,X,22.5,X,F-[[X]+X]+F[+FX]-X,F,FF
+Plant by PP & JH,Y,25.7,Y,YFX[+Y][-Y],X,X[-FFF][+FFF]FX
+Plant by PP & JH,F,22.5,F,FF+[+F-F-F]-[-F+F+F]
+Plant by PP & JH,X,20,X,F[+X]F[-X]+X,F,FF

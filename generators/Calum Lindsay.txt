@@ -1,0 +1,15 @@
+RNG test,F,90,F,FmF
+Circle pattern 1 by CL,ffffffffffffffffffffffffffff---F,22.5,F,+++FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF
+Circle pattern 2 by CL,ffffffffffffffffffffffffffff---F,22.5,F,+++FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF+FffF
+Circle pattern 3 by CL,ffffffffffffffffffffffffffff---F,22.5,F,+++fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf+fFFf
+Circle pattern 4 by CL,ffffffffffffffffffffffffffff---F,22.5,F,+++fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf+fFfFf
+Circle pattern 5 by CL,fffffffffffffffffffffffffffffffffffffffffffff---F,22.5,F,+++fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf+fFfFFfFf
+Square pattern by CL,fffffffffffffffffff---F,90,F,+++fFfFf+fFfFf+fFfFf+fFfFf
+Triangle pattern 1 by CL,fffffffffffffffffff---F,120,F,fFfFf+fFfFf+fFfFf+fFfFf
+Triangle pattern 2 by CL,fffffffffffffffffff---F,120,F,fFfFf+fFfFf+fFfFf
+Triangle pattern 3 by CL,fffffffffffffffffff---F,120,F,++fFfFf+fFfFf
+Pentagon pattern 1 by CL,fffffffffffffffffff---F,72,F,FFFFF+FFFFF+FFFFF+FFFFF+FFFFF
+Hexagon pattern 1 by CL,fffffffffffffffffff---F",60,F,FFFFF+FFFFF+FFFFF+FFFFF+FFFFF+FFFFF
+Heptagon pattern 1 by CL,fffffffffffffffffff---F,51.4287,F,FFFFF+FFFFF+FFFFF+FFFFF+FFFFF+FFFFF+FFFFF
+Heptagon pattern 2 by CL,fffffffffffffffffff---F,51.4287,F,FFfFF+FFfFF+FFfFF+FFfFF+FFfFF+FFfFF+FFfFF
+Heptagon pattern 3 by CL,fffffffffffffffffff---F,51.4287,F,FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF+FfFfF
